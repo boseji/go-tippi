@@ -44,66 +44,30 @@ package tppi_test
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/boseji/go-tppi"
 )
 
-type myBool struct {
-	bool
-	Tag string
-}
-
-const (
-	myBoolTypeSignature = "B"
-	myBoolDataTrue      = "1"
-	myBoolDataFalse     = "0"
-)
-
-func (b myBool) Type() string {
-	return myBoolTypeSignature
-}
-
-func (b myBool) String() string {
-	if b.bool {
-		return myBoolDataTrue
-	}
-	return myBoolDataFalse
-}
-
-type myStruct struct {
-	TimeStamp time.Duration
-	Value     float32
-	Topic     string
-}
-
-const (
-	myStructTypeSig = "MSTR"
-	myStructFormat  = "%d %f %q"
-)
-
-func (m myStruct) Type() string {
-	return myStructTypeSig
-}
-
-func (m myStruct) String() string {
-	return fmt.Sprintf(myStructFormat, m.TimeStamp, m.Value, m.Topic)
-}
-
 func ExampleSpecify() {
-	b := myBool{true, "bit~5"}
-	s := tppi.Specify(b.Type(), b.Tag, b.String)
+	b := struct {
+		bool
+		Tag string
+	}{true, "bit~5"}
+	s := tppi.Specify("B", b.Tag, func() string {
+		if b.bool {
+			return "1"
+		}
+		return "0"
+	})
 	fmt.Printf("%#v transforms into %q\n", b, s)
 
-	m := myStruct{134 * time.Millisecond, 12.345, "sensor/12"}
-	sa := tppi.Specify(m.Type(), "myStruct", m.String)
-	fmt.Printf("%#v\n", m)
-	fmt.Println("transforms into")
-	fmt.Println(sa)
+	f := 12.3456
+	s2 := tppi.Specify("F", "", func() string {
+		return fmt.Sprintf("%2.5f", f)
+	})
+	fmt.Printf("%#v transforms into %q\n", f, s2)
 
 	// Output:
-	// tppi_test.myBool{bool:true, Tag:"bit~5"} transforms into "B~bit%7E5~1"
-	// tppi_test.myStruct{TimeStamp:134000000, Value:12.345, Topic:"sensor/12"}
-	// transforms into
-	// MSTR~myStruct~134000000 12.345000 "sensor/12"
+	// struct { bool; Tag string }{bool:true, Tag:"bit~5"} transforms into "B~bit%7E5~1"
+	// 12.3456 transforms into "F~12.34560"
 }

@@ -49,7 +49,10 @@ import (
 )
 
 func ExampleAssemble() {
-	ba := []myBool{
+	ba := []struct {
+		bool
+		Tag string
+	}{
 		{true, "Bit~0"},
 		{false, "Bit-1"},
 		{false, "Bit-2"},
@@ -57,7 +60,12 @@ func ExampleAssemble() {
 	}
 	sa := make([]string, 0, len(ba))
 	for _, b := range ba {
-		sa = append(sa, tppi.Specify(b.Type(), b.Tag, b.String))
+		sa = append(sa, tppi.Specify("B", b.Tag, func() string {
+			if b.bool {
+				return "1"
+			}
+			return "0"
+		}))
 	}
 	s := tppi.Assemble(sa...)
 	s = tppi.PacketJoin(s)

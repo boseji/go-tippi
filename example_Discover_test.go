@@ -44,62 +44,51 @@ package tppi_test
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/boseji/go-tppi"
 )
 
-func (b *myBool) Recover(Type, Tag, Data string) error {
-	if Type != myBoolTypeSignature {
-		return fmt.Errorf("invalid bool type")
-	}
-	b.Tag = Tag
-	if Data == myBoolDataTrue {
-		b.bool = true
-	} else if Data == myBoolDataFalse {
-		b.bool = false
-	} else {
-		return fmt.Errorf("invalid bool data")
-	}
-	return nil
-}
-
-func (m *myStruct) Recover(Type, Tag, Data string) (err error) {
-	if Type != myStructTypeSig {
-		return fmt.Errorf("wrong type supplied")
-	}
-	_ = Tag
-	sa := strings.Split(Data, " ")
-	if len(sa) != 3 {
-		return fmt.Errorf("malformed data")
-	}
-
-	_, err = fmt.Sscanf(Data, myStructFormat, &m.TimeStamp, &m.Value, &m.Topic)
-	return
-}
-
 func ExampleDiscover() {
-	b := myBool{}
+	b := struct {
+		bool
+		Tag string
+	}{}
 	srcBool := "B~bit%7E5~1"
-	err := tppi.Discover(srcBool, b.Recover)
+	err := tppi.Discover(srcBool, func(s1, s2, s3 string) error {
+		if s1 != "B" {
+			return fmt.Errorf("wrong type")
+		}
+		b.Tag = s2
+		if s3 == "1" {
+			b.bool = true
+		} else if s3 == "0" {
+			b.bool = false
+		} else {
+			return fmt.Errorf("unknown data")
+		}
+		return nil
+	})
 	if err != nil {
 		fmt.Printf("failed to Discover - %v\n", err)
 		return
 	}
 	fmt.Printf("%q Transforms back %#v\n", srcBool, b)
 
-	m := myStruct{}
-	srcStruct := "MSTR~myStruct~134000000 12.345000 \"sensor/12\""
-	err = tppi.Discover(srcStruct, m.Recover)
+	srcFloat := "F~12.34560"
+	f := 0.00
+	err = tppi.Discover(srcFloat, func(s1, s2, s3 string) error {
+		_ = s1
+		_ = s2
+		_, err := fmt.Sscanf(s3, "%f", &f)
+		return err
+	})
 	if err != nil {
 		fmt.Printf("failed to Discover - %v\n", err)
 		return
 	}
-	fmt.Printf("%q Transforms back\n", srcStruct)
-	fmt.Printf("%#v", m)
+	fmt.Printf("%q Transforms back %#v\n", srcFloat, f)
 
 	// Output:
-	// "B~bit%7E5~1" Transforms back tppi_test.myBool{bool:true, Tag:"bit~5"}
-	// "MSTR~myStruct~134000000 12.345000 \"sensor/12\"" Transforms back
-	// tppi_test.myStruct{TimeStamp:134000000, Value:12.345, Topic:"sensor/12"}
+	// "B~bit%7E5~1" Transforms back struct { bool; Tag string }{bool:true, Tag:"bit~5"}
+	// "F~12.34560" Transforms back 12.3456
 }
