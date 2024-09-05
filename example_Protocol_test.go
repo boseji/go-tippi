@@ -45,7 +45,7 @@ package tppi_test
 import (
 	"fmt"
 
-	"guthub.com/boseji/go-tppi"
+	"github.com/boseji/go-tppi"
 )
 
 func ExampleAssemble() {

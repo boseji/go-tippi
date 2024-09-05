@@ -46,7 +46,7 @@ import (
 	"fmt"
 	"time"
 
-	"guthub.com/boseji/go-tppi"
+	"github.com/boseji/go-tppi"
 )
 
 type myBool struct {

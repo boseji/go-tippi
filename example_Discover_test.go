@@ -46,7 +46,7 @@ import (
 	"fmt"
 	"strings"
 
-	"guthub.com/boseji/go-tppi"
+	"github.com/boseji/go-tppi"
 )
 
 func (b *myBool) Recover(Type, Tag, Data string) error {
