@@ -39,9 +39,9 @@ These *symbol are replaced* by the following as *safeguards* for **TPPI packet**
 
 These *symbols are replaced* for *safeguards* in data specified for **TPPI contents** :
 
-	`~` converts to `%7E`
-	`|` converts to `%7C`
-	`+` converts to `%2B`
+- `~` converts to `%7E`
+- `|` converts to `%7C`
+- `+` converts to `%2B`
 
 The **TPPI protocol** contains special annotations:
 
