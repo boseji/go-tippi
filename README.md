@@ -1,10 +1,10 @@
 >
 > ॐ भूर्भुवः स्वः
-> 
+>
 > तत्स॑वि॒तुर्वरे॑ण्यं॒
-> 
+>
 > भर्गो॑ दे॒वस्य॑ धीमहि।
-> 
+>
 > धियो॒ यो नः॑ प्रचो॒दया॑त्॥
 >
 
@@ -61,7 +61,7 @@ Rules for **TPPI content**:
 
 - The *content mist be filtered* with necessary *safeguards*.
 - **Type Signature**: Each **TPPI content** must have a **Type Signature** that tells what type of data it contains and helps in *Discovery process* later. In case no **Type Signature** is provided `UN` would be used to indicate `unknown` Type`.
-	**Type Signature** can't be left blank and recommended to be added.
+- **Type Signature** can't be left blank and recommended to be added.
 - **Tag**: Each **TPPI content** can have a string name or tag that can help better identify the data enclosed. This would later be used for *Discovery process*. This is an *Optional field* and can be omitted in the **TPPI content**.
 - **Data**: The **TPPI content** encloses the data provided in *string form*, that can later be retrieved using the *Discovery process*.
 - The fields **Type Signature**, *(optional)* **Tag** and **Data** are separated by `~` Symbol in a **TPPI content**.
@@ -99,15 +99,15 @@ Usage in Program:
 package main
 
 import (
-	"fmt"
-	"github.com/boseji/go-tppi"
+    "fmt"
+    "github.com/boseji/go-tppi"
 )
 
 func main() {
-	fmt.Println(tppi.Assemble("Hari Aum"))
+    fmt.Println(tppi.Assemble("Hari Aum"))
 
-	// Output:
-	// ~|Hari Aum|~
+    // Output:
+    // ~|Hari Aum|~
 }
 ```
 
